@@ -1,4 +1,65 @@
-﻿<Window x:Class="PizzA.MainWindow"
+﻿ ----
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+
+namespace PizzA
+{
+	public partial class MainWindow : Window
+	{
+		public MainWindow()
+		{
+			InitializeComponent();
+		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			StringBuilder sb = new StringBuilder();
+
+			// Tészta
+			var teszta =
+				(lbTesztak.SelectedItem as ListBoxItem)?.Content.ToString()
+				?? "Nincs kiválasztva";
+
+			// Méret
+			var meret =
+				(cbMeret.SelectedItem as ComboBoxItem)?.Content.ToString()
+				?? "Nincs kiválasztva";
+
+			// Feltétek
+			var feltetek = new StringBuilder();
+			if (chkSajt.IsChecked == true) feltetek.Append("Sajt, ");
+			if (chkSonka.IsChecked == true) feltetek.Append("Sonka, ");
+			if (chkGomba.IsChecked == true) feltetek.Append("Gomba, ");
+			if (chkOliva.IsChecked == true) feltetek.Append("Olívabogyó, ");
+			if (chkKukorica.IsChecked == true) feltetek.Append("Kukorica, ");
+
+			string feltetSzoveg =
+				feltetek.Length > 0 ? feltetek.ToString().TrimEnd(',', ' ')
+				: "Nincs feltét";
+
+			// Átvétel
+			string atvetel =
+				rbHazhoz.IsChecked == true ? "Házhozszállítás" :
+				rbSzemelyes.IsChecked == true ? "Személyes átvétel" :
+				"Nincs kiválasztva";
+
+			// Üzenet
+			sb.AppendLine("🍕 Pizza rendelés összegzése:");
+			sb.AppendLine($"Tészta: {teszta}");
+			sb.AppendLine($"Méret: {meret}");
+			sb.AppendLine($"Feltétek: {feltetSzoveg}");
+			sb.AppendLine($"Átvétel módja: {atvetel}");
+
+			MessageBox.Show(sb.ToString(), "Rendelés");
+		}
+	}
+}
+
+
+
+
+--------------------------------------------------------------------------<Window x:Class="PizzA.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Pizza rendelés" Height="450" Width="400">
@@ -29,8 +90,31 @@
 			<ComboBoxItem Content="Nagy"/>
 		</ComboBox>
 
+		<!-- Feltétek -->
+		<StackPanel Grid.Row="3" Margin="0,10,0,0">
+			<TextBlock Text="Feltétek:"/>
+			<WrapPanel>
+				<CheckBox x:Name="chkSajt" Content="Sajt" Margin="5"/>
+				<CheckBox x:Name="chkSonka" Content="Sonka" Margin="5"/>
+				<CheckBox x:Name="chkGomba" Content="Gomba" Margin="5"/>
+				<CheckBox x:Name="chkOliva" Content="Olívabogyó" Margin="5"/>
+				<CheckBox x:Name="chkKukorica" Content="Kukorica" Margin="5"/>
+			</WrapPanel>
+		</StackPanel>
 
+		<!-- Átvétel -->
+		<StackPanel Grid.Row="4" Margin="0,10,0,0">
+			<TextBlock Text="Átvétel módja:"/>
+			<RadioButton x:Name="rbHazhoz" Content="Házhozszállítás" GroupName="atvetel"/>
+			<RadioButton x:Name="rbSzemelyes" Content="Személyes átvétel" GroupName="atvetel"/>
+		</StackPanel>
 
+		<!-- GOMB -->
+		<Button Grid.Row="5"
+                Content="Rendelés összegzése"
+                Width="200" Height="40"
+                HorizontalAlignment="Center" Margin="0,10,0,0"
+                Click="Button_Click"/>
 	</Grid>
 
 </Window>
